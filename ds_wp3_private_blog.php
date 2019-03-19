@@ -1,16 +1,17 @@
 <?php
 /**
+ * @package More-privacy-options
+ * Add more privacy(visibility) options to a WordPress Multisite Network..
+ *
  * Plugin Name: More Privacy Options
  * Plugin URI: http://wordpress.org/extend/plugins/more-privacy-options/
  * Version: 4.6
  * Description: Add more privacy(visibility) options to a WordPress Multisite Network. Settings->Reading->Visibility:Network Users, Blog Members, or Admins Only. Network Settings->Network Visibility Selector: All Blogs Visible to Network Users Only or Visibility managed per blog as default.
  * Author: D. Sader
  * Author URI: http://dsader.snowotherway.org/
- * Text Domain: add_privacy_options
+ * Text Domain: more-privacy-options
  * Network: true
- */
-
-/**
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,19 +23,9 @@
  * GNU General Public License for more details.
  */
 
-/**
- * Changelog
- * - use wp_login.php for denied access-screen (instead of building an own site).
- * - text-domain needs to be a string (not a variable). move to string.
- * - add a filter for privacy descriptions. people can add their own descriptions/icons.
- * - add REST-API Support: Now private content is no longer publicly accessible via: wp-json/wp/v2/posts
- * - add nonces and error handling for netwok settings page.
- * - sanitize internationalisation.
- * - add some default-icons.
- * - add filter for privacy descriptions.
- * - improve the "you are not allowed to access" - interface.
- */
-
+ /**
+  * Class which manages privacy-options (interfaces and rules).
+  */
 class DS_More_Privacy_Options {
 
 	/**
@@ -152,8 +143,8 @@ class DS_More_Privacy_Options {
 		add_filter( 'manage_sites-network_columns', array( $this, 'add_sites_column' ), 10, 1 );
 		add_action( 'manage_sites_custom_column', array( $this, 'manage_sites_custom_column' ), 10, 3 );
 
-		// template_redirect does not necessarliy trigger when accesssing wp-activate.php ?
-		// add_action( 'template_redirect', array( $this, 'maybe_redirect' ) );
+		
+		// add_action( 'template_redirect', array( $this, 'maybe_redirect' ) ); // template_redirect does not necessarliy trigger when accesssing wp-activate.php?
 		add_action( 'send_headers', array( $this, 'maybe_redirect' ) );
 
 		add_action( 'login_form', array( $this, 'login_message' ) );
@@ -622,7 +613,7 @@ class DS_More_Privacy_Options {
 	 * @return boolean
 	 */
 	public function is_activate_request() {
-		$php_self = isset( $_SERVER['PHP_SELF'] ) ? htmlentities( wp_unslash( $_SERVER['PHP_SELF'] ) ) : '';
+		$php_self = isset( $_SERVER['PHP_SELF'] ) ? esc_url_raw( wp_unslash( $_SERVER['PHP_SELF'] ) ) : '';
 		if ( strpos( $php_self, 'wp-activate.php' ) ) {
 			return true;
 		}
@@ -646,8 +637,8 @@ class DS_More_Privacy_Options {
 		$manage_visibility_per_site = esc_html__( 'Visibility is managed per site (default).', 'more-privacy-options' );
 
 		$setting               = intval( get_site_option( 'ds_sitewide_privacy', 1 ) );
-		$checked_network_users = ( -1 == $setting ) ? 'checked' : '';
-		$checked_per_site      = ( 1 == $setting ) ? 'checked=' : '';
+		$checked_network_users = ( -1 === $setting ) ? 'checked' : '';
+		$checked_per_site      = ( 1 === $setting ) ? 'checked=' : '';
 
 		$none_action = 'mpo_' . get_current_blog_id();
 		$nonce_name  = 'more_privacy_network_setting';
@@ -685,7 +676,7 @@ class DS_More_Privacy_Options {
 	public function sitewide_privacy_update() {
 
 		if ( ! current_user_can( 'manage_network_options' ) ) {
-			wp_redirect( add_query_arg( 'privacy-options-error', 'caps', network_admin_url( 'settings.php' ) ) );
+			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'caps', network_admin_url( 'settings.php' ) ) );
 			exit();
 		}
 
@@ -693,22 +684,28 @@ class DS_More_Privacy_Options {
 		$none_action = 'mpo_' . get_current_blog_id();
 
 		if ( isset( $_POST[ $nonce_name ] )
-			&& wp_verify_nonce( $_POST[ $nonce_name ], $none_action )
+			&& wp_verify_nonce( sanitize_key( $_POST[ $nonce_name ] ), $none_action )
 			&& isset( $_POST['ds_sitewide_privacy'] )
 		) {
 			update_site_option( 'ds_sitewide_privacy', intval( $_POST['ds_sitewide_privacy'] ) );
 		} else {
-			wp_redirect( add_query_arg( 'privacy-options-error', 'others', network_admin_url( 'settings.php' ) ) );
+			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'others', network_admin_url( 'settings.php' ) ) );
 			exit();
 		}
 	}
 
+	/**
+	 * Add some errors if saving privacy-options in the netword-admin went wrong.
+	 *
+	 * @return void
+	 */
 	public function sitewide_privacy_option_errors() {
 
-		if ( ! isset( $_GET['privacy-options-error'] ) ) {
+		// no need to do a nonce-verification as we are just checking for an error.
+		if ( ! isset( $_GET['privacy-options-error'] ) ) { // WPCS: CSRF ok.
 			return;
 		}
-		$msg = ( 'caps' === $_GET['privacy-options-error'] )
+		$msg = ( 'caps' === $_GET['privacy-options-error'] ) // WPCS: CSRF ok.
 		? esc_html__( 'You are not allowed to manage network options. Network visibility options have not been saved.' )
 		: esc_html__( 'Something went wrong saving network visibility options. Please try again.', 'more-privacy-options' );
 

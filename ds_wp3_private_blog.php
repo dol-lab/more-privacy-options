@@ -121,8 +121,6 @@ class DS_More_Privacy_Options {
 	/**
 	 * Adds the necessary WordPress Hooks for the plugin.
 	 *
-	 * @todo split in settings - handling?
-	 *
 	 * @return void
 	 */
 	public function add_hooks() {
@@ -143,7 +141,6 @@ class DS_More_Privacy_Options {
 		add_filter( 'manage_sites-network_columns', array( $this, 'add_sites_column' ), 10, 1 );
 		add_action( 'manage_sites_custom_column', array( $this, 'manage_sites_custom_column' ), 10, 3 );
 
-		
 		// add_action( 'template_redirect', array( $this, 'maybe_redirect' ) ); // template_redirect does not necessarliy trigger when accesssing wp-activate.php?
 		add_action( 'send_headers', array( $this, 'maybe_redirect' ) );
 
@@ -556,7 +553,7 @@ class DS_More_Privacy_Options {
 	 * @return void
 	 */
 	public function manage_sites_custom_column( $column_name, $blog_id ) {
-		if ( 'blog_visibility' != $column_name ) {
+		if ( 'blog_visibility' !== $column_name ) {
 			return;
 		}
 		$details = get_blog_details( $blog_id );

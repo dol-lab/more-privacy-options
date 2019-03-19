@@ -6,7 +6,7 @@
  * Plugin Name: More Privacy Options
  * Plugin URI: http://wordpress.org/extend/plugins/more-privacy-options/
  * Version: 4.6
- * Description: Add more privacy(visibility) options to a WordPress Multisite Network. Settings->Reading->Visibility:Network Users, Blog Members, or Admins Only. Network Settings->Network Visibility Selector: All Blogs Visible to Network Users Only or Visibility managed per blog as default.
+ * Description: Add more privacy (or visibility) options to a WordPress Multisite Network. Settings->Reading->Visibility: Network Users, Blog Members, or Admins Only. Network Settings->Network Visibility Selector: All Blogs Visible to Network Users Only or Visibility managed per blog as default.
  * Author: D. Sader
  * Author URI: http://dsader.snowotherway.org/
  * Text Domain: more-privacy-options
@@ -97,7 +97,7 @@ class DS_More_Privacy_Options {
 			),
 			0   => array( // this is WP-default. Just here for completeness.
 				'long'  => esc_html( __( 'Visible to the World. Discourage search engines from indexing this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'World, no search', 'more-privacy-options' ) ),
+				'short' => esc_html( __( 'World, discourage search enginess', 'more-privacy-options' ) ),
 				'icon'  => 'dashicons-admin-site',
 			),
 			- 1 => array(
@@ -628,8 +628,8 @@ class DS_More_Privacy_Options {
 		add_settings_error( 'more-privacy-options', 'error', esc_html__( 'Something went wrong saving privacy options.', 'more-privacy-options' ) );
 		settings_errors( 'more_privacy_options' );
 
-		$title                      = esc_html__( 'Network Visibility Selector', 'more-privacy-options' );
-		$network_vis                = esc_html__( 'Network Visibility', 'more-privacy-options' );
+		$title                      = esc_html__( 'Network Visibility', 'more-privacy-options' );
+		$network_vis                = esc_html__( 'Privacy', 'more-privacy-options' );
 		$visible_network_users      = esc_html__( 'Sites are only visible to registered users of this network.', 'more-privacy-options' );
 		$manage_visibility_per_site = esc_html__( 'Visibility is managed per site (default).', 'more-privacy-options' );
 

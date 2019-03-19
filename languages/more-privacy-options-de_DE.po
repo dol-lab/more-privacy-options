@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: More Privacy Options\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-19 15:28+0000\n"
+"PO-Revision-Date: 2019-03-19 15:34+0000\n"
+"Last-Translator: admin spaces <spaces-admin@kisd.de>\n"
+"Language-Team: Deutsch\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.2.0; wp-5.1.1"
+
+#: ds_wp3_private_blog.php:94
+msgid "Visible to the World. Allow search engines to index this site."
+msgstr "Sichtbar für die Welt. Suchmaschinen können die Seite indizieren."
+
+#: ds_wp3_private_blog.php:95
+msgid "World"
+msgstr "Welt"
+
+#: ds_wp3_private_blog.php:99
+msgid ""
+"Visible to the World. Discourage search engines from indexing this site."
+msgstr ""
+"Sichtbar für die Welt. Suchmaschinen (sollen) diese Seite nicht indizieren."
+
+#: ds_wp3_private_blog.php:100
+msgid "World, discourage search enginess"
+msgstr "Welt, keine Suchmaschinen"
+
+#: ds_wp3_private_blog.php:104
+msgid "Visible only to registered users of this network."
+msgstr "Nur für registrierte Nutzer*innen des Netzwerks sichtbar."
+
+#: ds_wp3_private_blog.php:105
+msgid "Network users"
+msgstr "Netzwerk-Nutzer*innen"
+
+#: ds_wp3_private_blog.php:109
+msgid "Visible only to registered users of this site."
+msgstr "Nur für registrierte Nutzer dieser Seite sichtbar."
+
+#: ds_wp3_private_blog.php:110
+msgid "Blog users"
+msgstr "Blog Nutzer*innen"
+
+#: ds_wp3_private_blog.php:114
+msgid "Visible only to administrators of this site."
+msgstr "Nur für Administratoren dieser Seite sichtbar."
+
+#: ds_wp3_private_blog.php:115
+msgid "Blog Admins"
+msgstr "Blog Administratoren"
+
+#: ds_wp3_private_blog.php:360
+msgid "Site membership at"
+msgstr "Mitgliedschaft bei der Seite"
+
+#: ds_wp3_private_blog.php:375
+msgid "To become a member of this site, contact"
+msgstr "Um ein Mitglied dieser Seite zu werden, kontaktiere "
+
+#: ds_wp3_private_blog.php:413
+msgid "We don't have a description for the given privacy id."
+msgstr "Es gibt für die angegebene Privatsphären-id keine Beschreibung."
+
+#: ds_wp3_private_blog.php:422
+msgid ""
+"More Privacy Options is a plugin just for multisites, please deactivate it."
+msgstr "Mehr Privatsphäre Optionen eignet sich nur für Netzwerkinstallationen."
+
+#: ds_wp3_private_blog.php:453
+msgid "Site changed reading visibility settings."
+msgstr "Die Seite hat ihre Sichtbarkeitseinstellungen geändert."
+
+#: ds_wp3_private_blog.php:456
+msgid ""
+" \n"
+"\n"
+"Sent by More Privacy Options plugin."
+msgstr "Vom Plugin \"Mehr Privatsphäre Optionen\" verschickt."
+
+#. Name of the plugin
+#: ds_wp3_private_blog.php:515
+msgid "More Privacy Options"
+msgstr "Mehr Privatsphäre Optionen"
+
+#: ds_wp3_private_blog.php:544
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+#: ds_wp3_private_blog.php:628
+msgid "Something went wrong saving privacy options."
+msgstr "Beim Speichern der Privatsphäreoptionen ist ein Fehler aufgetreten."
+
+#: ds_wp3_private_blog.php:631
+msgid "Network Visibility"
+msgstr "Netzwerk Sichtbarkeit"
+
+#: ds_wp3_private_blog.php:632
+msgid "Privacy"
+msgstr "Privatsphäre"
+
+#: ds_wp3_private_blog.php:633
+msgid "Sites are only visible to registered users of this network."
+msgstr "Seiten sind nur für registrierte Mitglieder dieses Netzwerks sichtbar."
+
+#: ds_wp3_private_blog.php:634
+msgid "Visibility is managed per site (default)."
+msgstr ""
+"Die Sichtbarkeit lässt sich für jede Seite individuell einstellen (Standard)."
+
+#: ds_wp3_private_blog.php:707
+msgid ""
+"Something went wrong saving network visibility options. Please try again."
+msgstr ""
+"Beim Speichern der Sichtbarkeits-Optionen für das Netzwerk ist ein Fehler "
+"aufgetreten. Versuchs nochmal."
+
+#. Description of the plugin
+msgid ""
+"Add more privacy (or visibility) options to a WordPress Multisite Network. "
+"Settings->Reading->Visibility: Network Users, Blog Members, or Admins Only. "
+"Network Settings->Network Visibility Selector: All Blogs Visible to Network "
+"Users Only or Visibility managed per blog as default."
+msgstr ""
+
+#. URI of the plugin
+msgid "http://wordpress.org/extend/plugins/more-privacy-options/"
+msgstr ""
+
+#. Author of the plugin
+msgid "D. Sader"
+msgstr "D. Sader"
+
+#. Author URI of the plugin
+msgid "http://dsader.snowotherway.org/"
+msgstr ""

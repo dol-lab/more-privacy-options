@@ -1,7 +1,11 @@
 <?php
 /**
- * @package More-privacy-options
- * Add more privacy(visibility) options to a WordPress Multisite Network..
+ * More Privacy Options
+ *
+ * Add more privacy(visibility) options to a WordPress Multisite Network.
+ *
+ * @package WordPress
+ * @subpackage More-privacy-options
  *
  * Plugin Name: More Privacy Options
  * Plugin URI: http://wordpress.org/extend/plugins/more-privacy-options/
@@ -23,9 +27,9 @@
  * GNU General Public License for more details.
  */
 
- /**
-  * Class which manages privacy-options (interfaces and rules).
-  */
+/**
+ * Class which manages privacy-options (interfaces and rules).
+ */
 class DS_More_Privacy_Options {
 
 	/**
@@ -583,6 +587,8 @@ class DS_More_Privacy_Options {
 	/**
 	 * Tries to authenticate a (not logged in) user via $_SERVER['PHP_AUTH_USER'].
 	 * Dies if user is not allowed.
+	 *
+	 * @todo: remove? does anybody use feeds? security: open brute force - option.
 	 *
 	 * @return void
 	 */

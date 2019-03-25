@@ -1,0 +1,14 @@
+{
+    "name": "dsader/more-privacy-options",
+    "type": "wordpress-plugin",
+    "description": "Add more privacy(visibility) options to a WordPress Multisite Network.",
+    "keywords": ["Privacy", "Private", "Deny Access", "WordPress","Network", "Visibility"],
+    "homepage": "http://dsader.snowotherway.org/wordpress-plugins/more-privacy-options/",
+    "license": "GNU-2.0-or-later",
+    "authors": [
+        {
+            "name": "D. Sader",
+            "homepage": "http://dsader.snowotherway.org"
+        }
+    ]
+}

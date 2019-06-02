@@ -101,7 +101,7 @@ class DS_More_Privacy_Options {
 			),
 			0   => array( // this is WP-default. Just here for completeness.
 				'long'  => esc_html( __( 'Visible to the World. Discourage search engines from indexing this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'World, discourage search enginess', 'more-privacy-options' ) ),
+				'short' => esc_html( __( 'World, discourage search engines', 'more-privacy-options' ) ),
 				'icon'  => 'dashicons-admin-site',
 			),
 			- 1 => array(

@@ -312,7 +312,7 @@ class Ds_More_Privacy_Hooks {
 		global $details, $options;
 		$title        = esc_html__( 'More Privacy Options', 'more-privacy-options' );
 		$input_fields = '';
-		foreach ( $this->mpo->blog_privacy_description as $opt_id => $opt_desc ) {
+		foreach ( $this->mpo->blog_privacy_descriptions as $opt_id => $opt_desc ) {
 			$input_fields .= $this->get_input_field( $opt_id, $details->public, 'option[blog_public]' ) . "($opt_id)<br>";
 		}
 		echo "<tr><th>$title</th><td>$input_fields</td></tr>"; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -370,7 +370,7 @@ class Ds_More_Privacy_Hooks {
 	public function add_privacy_options() {
 		global $blogname,$current_site;
 		$blog_name = get_bloginfo( 'name', 'display' );
-		foreach ( $this->mpo->blog_privacy_description as $opt_id => $opt_desc ) {
+		foreach ( $this->mpo->blog_privacy_descriptions as $opt_id => $opt_desc ) {
 			if ( $opt_id < 0 ) { // The ids 1 and 0 are WP defaults and already have an interface.
 				$input = $this->get_input_field( $opt_id, $this->mpo->get_current_privacy_id(), 'blog_public' ) . '<br>';
 				echo "<br><label for='blog-private$opt_id' class='checkbox' >$input</label>"; // phpcs:ignore WordPress.Security.EscapeOutput

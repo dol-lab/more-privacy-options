@@ -140,8 +140,8 @@ class Ds_More_Privacy_Options {
 	 * @return array with keys long, short and icon
 	 */
 	public function get_privacy_level( int $id ) {
-		foreach ( $this->blog_privacy_descriptions[ $id ] as $type => $value ){
-			$this->blog_privacy_descriptions[ $id ][$type] = $this->get_privacy_description( $id, $type);
+		foreach ( $this->blog_privacy_descriptions[ $id ] as $type => $value ) {
+			$this->blog_privacy_descriptions[ $id ][ $type ] = $this->get_privacy_description( $id, $type );
 		}
 		return $this->blog_privacy_descriptions[ $id ];
 	}

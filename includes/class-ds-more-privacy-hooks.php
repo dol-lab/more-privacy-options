@@ -134,7 +134,10 @@ class Ds_More_Privacy_Hooks {
 
 		if ( $this->is_activate_request() ) {
 			if ( ! is_main_site() ) {
-				wp_safe_redirect( network_home_url( 'wp-activate.php' ) );
+				$querystring      = '?' . http_build_query( $_GET );
+				$network_home_url = network_home_url( 'wp-activate.php' ) . $querystring;
+				$redirect_url     = apply_filters( 'more_privacy_redirect_activate_request', $network_home_url );
+				wp_safe_redirect( $redirect_url );
 				exit();
 			}
 			return;

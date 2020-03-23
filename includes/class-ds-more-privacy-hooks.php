@@ -4,14 +4,32 @@
 class Ds_More_Privacy_Hooks {
 
 	/**
-	 * Undocumented variable
+	 * The main class of this plugin.
 	 *
 	 * @var Ds_More_Privacy_Options
 	 */
 	private $mpo;
 
+	/**
+	 * Internationalized String: "Added by MPO-Plugin".
+	 *
+	 * @var string
+	 */
+	private $by;
+
+	/**
+	 * Names of the options this plugin uses.
+	 *
+	 * @var array
+	 */
+	private $options = array(
+		'default_privacy' => 'ds_sitewide_privacy',
+		'notify_admin'    => 'ds_notify_superadmin_privacy_change',
+	);
+
 	public function __construct( $mpo ) {
 		$this->mpo = $mpo;
+		$this->by  = esc_html( __( "Added by the plugin 'More Privacy Options'.", 'more-privacy-options' ) );
 		$this->add_hooks();
 	}
 
@@ -23,7 +41,6 @@ class Ds_More_Privacy_Hooks {
 	private function add_hooks() {
 
 		add_action( 'init', array( $this, 'localization_init' ) );
-
 		add_action( 'init', array( $this, 'maybe_disable_rest' ) );
 
 		// Network->Settings.
@@ -81,8 +98,7 @@ class Ds_More_Privacy_Hooks {
 			'rest_authentication_errors',
 			function( $result ) {
 				$msg = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
-				$by  = __( "( Message created by the plugin 'More Privacy Options')", 'add_privacy_options' );
-				return new WP_Error( 'rest_cannot_access', $msg . $by, array( 'status' => 401 ) );
+				return new WP_Error( 'rest_cannot_access', $msg . $this->by, array( 'status' => 401 ) );
 			}
 		);
 
@@ -187,6 +203,8 @@ class Ds_More_Privacy_Hooks {
 				$contact_users .= "<a href='mailto:$user->user_email?subject=$site_member_at [$blogname] - $sitename'>$user->display_name</a>, ";
 			}
 		}
+
+		$info = esc_html( __( 'To become a member of this site, contact', 'more-privacy-options' ) );
 		if ( '' === $contact_users ) {
 			$admin_mail    = get_option( 'admin_email' );
 			$contact_users = "$info <a href='mailto:$admin_mail?subject=$site_member_at [$blogname] - $sitename'>$admin_mail</a>";
@@ -194,7 +212,6 @@ class Ds_More_Privacy_Hooks {
 			$contact_users = rtrim( $contact_users, ', ' );
 		}
 
-		$info    = esc_html( __( 'To become a member of this site, contact', 'more-privacy-options' ) );
 		$message = "$privacy_description <br>$info<br> $contact_users.";
 
 		$message     = apply_filters( 'more_privacy_closed_message', $message, $priv_id, $privacy_description );
@@ -246,20 +263,34 @@ class Ds_More_Privacy_Hooks {
 	 */
 	public function mail_super_admin() {
 
-		$blog_id    = get_current_blog_id();
-		$privacy_id = $this->mpo->get_current_privacy_id();
+		if ( ! get_site_option( $this->options['notify_admin'], false ) ) {
+			return;
+		}
 
-		$to_new   = $this->mpo->get_privacy_description( $privacy_id );
+		$blog_id  = get_current_blog_id();
+		$to_new   = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
 		$blogname = get_blog_option( $blog_id, 'blogname' );
-		$email    = stripslashes( get_site_option( 'admin_email' ) );
-		$url      = get_site_url( $blog_id );
-		$subject  = __( 'Site changed reading visibility settings.', 'more-privacy-options' )
-			. " $blogname [ID: $blog_id, $url] => $to_new";
-		$message  = $subject;
-		$message .= __( " \r\n\r\nSent by More Privacy Options plugin.", 'more-privacy-options' );
+
+		$blog_url = get_site_url( $blog_id );
+		$subject  = esc_html( __( 'Site changed reading visibility settings.', 'more-privacy-options' ) )
+			. " $blogname [ID: $blog_id, $blog_url] => $to_new";
+
+		$setting_url  = network_admin_url( 'settings.php' );
+		$disable_text = esc_html( __( 'Disable this type of emails in Network admin: ', 'more-privacy-options' ) );
+		$message      = "
+				$subject
+				\r\n\r\n" .
+				esc_html( __( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) ) . "
+				$disable_text $setting_url
+		";
 
 		$headers = 'Auto-Submitted: auto-generated';
-		wp_mail( $email, $subject, $message, $headers );
+		wp_mail(
+			stripslashes( get_site_option( 'admin_email' ) ),
+			$subject,
+			$message,
+			$headers
+		);
 	}
 
 	/**
@@ -433,42 +464,87 @@ class Ds_More_Privacy_Hooks {
 		add_settings_error( 'more-privacy-options', 'error', esc_html__( 'Something went wrong saving privacy options.', 'more-privacy-options' ) );
 		settings_errors( 'more_privacy_options' );
 
-		$title                      = esc_html__( 'Network Visibility', 'more-privacy-options' );
-		$network_vis                = esc_html__( 'Privacy', 'more-privacy-options' );
-		$visible_network_users      = esc_html__( 'Sites are only visible to registered users of this network.', 'more-privacy-options' );
-		$manage_visibility_per_site = esc_html__( 'Visibility is managed per site (default).', 'more-privacy-options' );
+		$title = esc_html__( 'Network Visibility', 'more-privacy-options' );
 
-		$setting               = intval( get_site_option( 'ds_sitewide_privacy', 1 ) );
-		$checked_network_users = ( -1 === $setting ) ? 'checked' : '';
-		$checked_per_site      = ( 1 === $setting ) ? 'checked=' : '';
+		$nonce_action = 'mpo_' . get_current_blog_id();
+		$nonce_name   = 'more_privacy_network_setting';
+		$nonce        = wp_nonce_field( $nonce_action, $nonce_name, true, false );
 
-		$none_action = 'mpo_' . get_current_blog_id();
-		$nonce_name  = 'more_privacy_network_setting';
-		$nonce       = wp_nonce_field( $none_action, $nonce_name, true, false );
+		$default_privacy_settings = $this->sitewide_privacy_default_visibility();
+		$notify_admin_settings    = $this->sitewide_privacy_option_notify_super_admin();
 
 		$markup = "
 			<h3>$title</h3>
+			$this->by
 			<table class='form-table'>
 				$nonce
-				<tr valign='top'>
-					<th scope='row'>$network_vis</th>
-					<td>
-					<fieldset>
-						<label>
-							<input type='radio' name='ds_sitewide_privacy' id='ds_sitewide_privacy' value='-1' $checked_network_users/>
-							$visible_network_users
-						</label><br />
-						<label>
-							<input type='radio' name='ds_sitewide_privacy' id='ds_sitewide_privacy_1' value='1' $checked_per_site/>
-							$manage_visibility_per_site
-						</label><br />
-						</td>
-					</fieldset>
-				</tr>
+				$default_privacy_settings
+				$notify_admin_settings
 			</table>
 		";
 		echo $markup; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
+
+	/**
+	 * Select between:
+	 * - Sites are only visible to registered users of this network
+	 * - Visibility is managed per site (default)
+	 *
+	 * @return string Form Markup
+	 */
+	public function sitewide_privacy_default_visibility() {
+		$network_vis                = esc_html__( 'Default privacy', 'more-privacy-options' );
+		$visible_network_users      = esc_html__( 'Sites are only visible to registered users of this network.', 'more-privacy-options' );
+		$manage_visibility_per_site = esc_html__( 'Visibility is managed per site (default).', 'more-privacy-options' );
+
+		$option_name           = $this->options['default_privacy'];
+		$setting               = intval( get_site_option( $option_name, 1 ) );
+		$checked_network_users = ( -1 === $setting ) ? 'checked' : '';
+		$checked_per_site      = ( 1 === $setting ) ? 'checked=' : '';
+
+		return "
+			<tr valign='top'>
+				<th scope='row'>$network_vis</th>
+				<td>
+					<fieldset>
+						<label>
+							<input type='radio' name='$option_name' id='$option_name' value='-1' $checked_network_users/>
+							$visible_network_users
+						</label><br />
+						<label>
+							<input type='radio' name='$option_name' id='{$option_name}_1' value='1' $checked_per_site/>
+							$manage_visibility_per_site
+						</label><br />
+					</fieldset>
+				</td>
+			</tr>
+		";
+	}
+
+	/**
+	 * Toggle sending emails about privacy changes.
+	 *
+	 * @return string Form Markup
+	 */
+	public function sitewide_privacy_option_notify_super_admin() {
+
+		$option_name = $this->options['notify_admin'];
+		$active      = get_site_option( $option_name, true );
+		$checked     = checked( $active );
+		$notify      = esc_html( __( 'Notify super-admin', 'more-privacy-options' ) );
+		$text        = esc_html( __( 'Send emails about blog-privacy changes to super-admin.', 'more-privacy-options' ) );
+
+		return "
+			<tr>
+				<th scope='row'>$notify</th>
+				<td>
+					<input name='$option_name' id='$option_name' type='checkbox' $checked>
+					<label for='$option_name'>$text</label>
+				</td>
+			<tr>
+		";
+	}
+
 
 	/**
 	 * Triggered by the action "update_wpmu_options".
@@ -485,11 +561,14 @@ class Ds_More_Privacy_Hooks {
 		$nonce_name  = 'more_privacy_network_setting';
 		$none_action = 'mpo_' . get_current_blog_id();
 
+		$default_privacy_option_name = $this->options['default_privacy'];
+		$notify_admin_option_name    = $this->options['notify_admin'];
+
 		if ( isset( $_POST[ $nonce_name ] )
 			&& wp_verify_nonce( sanitize_key( $_POST[ $nonce_name ] ), $none_action )
-			&& isset( $_POST['ds_sitewide_privacy'] )
-		) {
-			update_site_option( 'ds_sitewide_privacy', intval( $_POST['ds_sitewide_privacy'] ) );
+			&& isset( $_POST[ $default_privacy_option_name ] ) ) {
+			update_site_option( $default_privacy_option_name, intval( $_POST[ $default_privacy_option_name ] ) );
+			update_site_option( $notify_admin_option_name, isset( $_POST[ $notify_admin_option_name ] ) ); // key is only present if 'on'.
 		} else {
 			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'others', network_admin_url( 'settings.php' ) ) );
 			exit();
@@ -504,10 +583,10 @@ class Ds_More_Privacy_Hooks {
 	public function sitewide_privacy_option_errors() {
 
 		// no need to do a nonce-verification as we are just checking for an error.
-		if ( ! isset( $_GET['privacy-options-error'] ) ) { // WPCS: CSRF ok.
+		if ( ! isset( $_GET['privacy-options-error'] ) ) {
 			return;
 		}
-		$msg = ( 'caps' === $_GET['privacy-options-error'] ) // WPCS: CSRF ok.
+		$msg = ( 'caps' === $_GET['privacy-options-error'] )
 		? esc_html__( 'You are not allowed to manage network options. Network visibility options have not been saved.' )
 		: esc_html__( 'Something went wrong saving network visibility options. Please try again.', 'more-privacy-options' );
 

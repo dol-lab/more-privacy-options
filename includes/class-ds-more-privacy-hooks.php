@@ -71,7 +71,7 @@ class Ds_More_Privacy_Hooks {
 		add_filter( 'option_ping_sites', array( $this, 'privacy_ping_filter' ), 1 );
 
 		// email super-admin when privacy changes.
-		add_action( 'update_blog_public', array( $this, 'mail_super_admin' ) );
+		add_action( 'update_blog_public', array( $this, 'mail_super_admin' ), 10, 2 );
 
 		// hook into signup form?
 		add_action( 'signup_blogform', array( $this, 'add_privacy_options' ) );
@@ -261,16 +261,14 @@ class Ds_More_Privacy_Hooks {
 	 *
 	 * @return void
 	 */
-	public function mail_super_admin() {
+	public function mail_super_admin( $blog_id, $privacy_id ) {
 
 		if ( ! get_site_option( $this->options['notify_admin'], false ) ) {
 			return;
 		}
 
-		$blog_id  = get_current_blog_id();
-		$to_new   = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
+		$to_new   = $this->mpo->get_privacy_description( $privacy_id );
 		$blogname = get_blog_option( $blog_id, 'blogname' );
-
 		$blog_url = get_site_url( $blog_id );
 		$subject  = esc_html( __( 'Site changed reading visibility settings.', 'more-privacy-options' ) )
 			. " $blogname [ID: $blog_id, $blog_url] => $to_new";

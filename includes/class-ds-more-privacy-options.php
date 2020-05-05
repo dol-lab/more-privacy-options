@@ -50,7 +50,7 @@ class Ds_More_Privacy_Options {
 	 * @access  private
 	 * @since   1.0.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * The main plugin object.
@@ -239,10 +239,10 @@ class Ds_More_Privacy_Options {
 	 * @return Main DS_More_Privacy_Options instance
 	 */
 	public static function instance( $parent ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $parent );
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self( $parent );
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**

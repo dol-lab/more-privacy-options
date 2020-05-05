@@ -14,6 +14,7 @@
  * Author: D. Sader
  * Author URI: http://dsader.snowotherway.org/
  * Text Domain: more-privacy-options
+ * Domain Path: /languages
  * Network: true
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +28,11 @@
  * GNU General Public License for more details.
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+load_plugin_textdomain( 'more-privacy-options', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 // Load plugin class files.
 require_once( 'includes/class-ds-more-privacy-options.php' );

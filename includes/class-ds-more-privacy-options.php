@@ -78,7 +78,7 @@ class Ds_More_Privacy_Options {
 	 *
 	 * @return void
 	 */
-	private function init_vars() {
+	public function init_vars() {
 
 		$this->sitewide_privacy = intval( get_site_option( 'ds_sitewide_privacy' ) );
 
@@ -87,28 +87,28 @@ class Ds_More_Privacy_Options {
 		 */
 		$this->blog_privacy_descriptions = array(
 			1   => array( // this is WP-default. Just here for completeness.
-				'long'  => esc_html( __( 'Visible to the World. Allow search engines to index this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'World', 'more-privacy-options' ) ),
+				'long'  => esc_html__( 'Visible to the World. Allow search engines to index this site.', 'more-privacy-options' ),
+				'short' => esc_html__( 'World', 'more-privacy-options' ),
 				'icon'  => 'dashicons-admin-site',
 			),
 			0   => array( // this is WP-default. Just here for completeness.
-				'long'  => esc_html( __( 'Visible to the World. Discourage search engines from indexing this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'World, discourage search engines', 'more-privacy-options' ) ),
+				'long'  => esc_html__( 'Visible to the World. Discourage search engines from indexing this site.', 'more-privacy-options' ),
+				'short' => esc_html__( 'World, discourage search engines', 'more-privacy-options' ),
 				'icon'  => 'dashicons-admin-site',
 			),
 			- 1 => array(
-				'long'  => esc_html( __( 'Visible only to registered users of this network.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'Network users', 'more-privacy-options' ) ),
+				'long'  => esc_html__( 'Visible only to registered users of this network.', 'more-privacy-options' ),
+				'short' => esc_html__( 'Network users', 'more-privacy-options' ),
 				'icon'  => 'dashicons-networking',
 			),
 			- 2 => array(
-				'long'  => esc_html( __( 'Visible only to registered users of this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'Blog users', 'more-privacy-options' ) ),
+				'long'  => esc_html__( 'Visible only to registered users of this site.', 'more-privacy-options' ),
+				'short' => esc_html__( 'Blog users', 'more-privacy-options' ),
 				'icon'  => 'dashicons-groups',
 			),
 			- 3 => array(
-				'long'  => esc_html( __( 'Visible only to administrators of this site.', 'more-privacy-options' ) ),
-				'short' => esc_html( __( 'Blog Admins', 'more-privacy-options' ) ),
+				'long'  => esc_html__( 'Visible only to administrators of this site.', 'more-privacy-options' ),
+				'short' => esc_html__( 'Blog Admins', 'more-privacy-options' ),
 				'icon'  => 'dashicons-businessman',
 			),
 		);

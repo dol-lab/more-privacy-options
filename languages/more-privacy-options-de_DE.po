@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: More Privacy Options\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-19 15:28+0000\n"
-"PO-Revision-Date: 2019-03-19 15:34+0000\n"
-"Last-Translator: admin spaces <spaces-admin@kisd.de>\n"
+"POT-Creation-Date: 2020-05-05 11:26+0000\n"
+"PO-Revision-Date: 2020-05-05 11:30+0000\n"
+"Last-Translator: ifs admin\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -12,114 +12,129 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.2.0; wp-5.1.1"
+"X-Loco-Version: 2.3.3; wp-5.4.1"
 
-#: ds_wp3_private_blog.php:94
-msgid "Visible to the World. Allow search engines to index this site."
-msgstr "Sichtbar für die Welt. Suchmaschinen können die Seite indizieren."
+#: includes/class-ds-more-privacy-hooks.php:32
+msgid "Added by the plugin 'More Privacy Options'."
+msgstr "Vom \"More Privacy Options\"-Plugin hinzugefügt."
 
-#: ds_wp3_private_blog.php:95
-msgid "World"
-msgstr "Welt"
-
-#: ds_wp3_private_blog.php:99
-msgid ""
-"Visible to the World. Discourage search engines from indexing this site."
-msgstr ""
-"Sichtbar für die Welt. Suchmaschinen (sollen) diese Seite nicht indizieren."
-
-#: ds_wp3_private_blog.php:100
-msgid "World, discourage search enginess"
-msgstr "Welt, keine Suchmaschinen"
-
-#: ds_wp3_private_blog.php:104
-msgid "Visible only to registered users of this network."
-msgstr "Nur für registrierte Nutzer*innen des Netzwerks sichtbar."
-
-#: ds_wp3_private_blog.php:105
-msgid "Network users"
-msgstr "Netzwerk-Nutzer*innen"
-
-#: ds_wp3_private_blog.php:109
-msgid "Visible only to registered users of this site."
-msgstr "Nur für registrierte Nutzer dieser Seite sichtbar."
-
-#: ds_wp3_private_blog.php:110
-msgid "Blog users"
-msgstr "Blog Nutzer*innen"
-
-#: ds_wp3_private_blog.php:114
-msgid "Visible only to administrators of this site."
-msgstr "Nur für Administratoren dieser Seite sichtbar."
-
-#: ds_wp3_private_blog.php:115
-msgid "Blog Admins"
-msgstr "Blog Administratoren"
-
-#: ds_wp3_private_blog.php:360
+#: includes/class-ds-more-privacy-hooks.php:198
 msgid "Site membership at"
 msgstr "Mitgliedschaft bei der Seite"
 
-#: ds_wp3_private_blog.php:375
+#: includes/class-ds-more-privacy-hooks.php:207
 msgid "To become a member of this site, contact"
 msgstr "Um ein Mitglied dieser Seite zu werden, kontaktiere "
 
-#: ds_wp3_private_blog.php:413
-msgid "We don't have a description for the given privacy id."
-msgstr "Es gibt für die angegebene Privatsphären-id keine Beschreibung."
-
-#: ds_wp3_private_blog.php:422
+#: includes/class-ds-more-privacy-hooks.php:242
 msgid ""
 "More Privacy Options is a plugin just for multisites, please deactivate it."
 msgstr "Mehr Privatsphäre Optionen eignet sich nur für Netzwerkinstallationen."
 
-#: ds_wp3_private_blog.php:453
+#: includes/class-ds-more-privacy-hooks.php:273
 msgid "Site changed reading visibility settings."
 msgstr "Die Seite hat ihre Sichtbarkeitseinstellungen geändert."
 
-#: ds_wp3_private_blog.php:456
-msgid ""
-" \n"
-"\n"
-"Sent by More Privacy Options plugin."
-msgstr "Vom Plugin \"Mehr Privatsphäre Optionen\" verschickt."
+#: includes/class-ds-more-privacy-hooks.php:277
+msgid "Disable this type of emails in Network admin: "
+msgstr "Deaktiviere diese art von Nachrichten in der Netzwerk-Administration:"
+
+#: includes/class-ds-more-privacy-hooks.php:281
+msgid "Sent by More Privacy Options plugin."
+msgstr "Vom \"More Privacy Options\"-Plugin verschickt."
 
 #. Name of the plugin
-#: ds_wp3_private_blog.php:515
+#: includes/class-ds-more-privacy-hooks.php:347
 msgid "More Privacy Options"
 msgstr "Mehr Privatsphäre Optionen"
 
-#: ds_wp3_private_blog.php:544
+#: includes/class-ds-more-privacy-hooks.php:376
 msgid "Visibility"
 msgstr "Sichtbarkeit"
 
-#: ds_wp3_private_blog.php:628
+#: includes/class-ds-more-privacy-hooks.php:462
 msgid "Something went wrong saving privacy options."
 msgstr "Beim Speichern der Privatsphäreoptionen ist ein Fehler aufgetreten."
 
-#: ds_wp3_private_blog.php:631
+#: includes/class-ds-more-privacy-hooks.php:465
 msgid "Network Visibility"
 msgstr "Netzwerk Sichtbarkeit"
 
-#: ds_wp3_private_blog.php:632
-msgid "Privacy"
-msgstr "Privatsphäre"
+#: includes/class-ds-more-privacy-hooks.php:494
+msgid "Default privacy"
+msgstr "Standard Sichtbarkeit"
 
-#: ds_wp3_private_blog.php:633
+#: includes/class-ds-more-privacy-hooks.php:495
 msgid "Sites are only visible to registered users of this network."
 msgstr "Seiten sind nur für registrierte Mitglieder dieses Netzwerks sichtbar."
 
-#: ds_wp3_private_blog.php:634
+#: includes/class-ds-more-privacy-hooks.php:496
 msgid "Visibility is managed per site (default)."
 msgstr ""
 "Die Sichtbarkeit lässt sich für jede Seite individuell einstellen (Standard)."
 
-#: ds_wp3_private_blog.php:707
+#: includes/class-ds-more-privacy-hooks.php:532
+msgid "Notify super-admin"
+msgstr "Benachrichtige den Super-Admin."
+
+#: includes/class-ds-more-privacy-hooks.php:533
+msgid "Send emails about blog-privacy changes to super-admin."
+msgstr ""
+"Benachrichtige den Super-Admin über Sichtbarkeitsveränderungen in Blogs (via."
+" E-Mail)."
+
+#: includes/class-ds-more-privacy-hooks.php:589
 msgid ""
 "Something went wrong saving network visibility options. Please try again."
 msgstr ""
 "Beim Speichern der Sichtbarkeits-Optionen für das Netzwerk ist ein Fehler "
 "aufgetreten. Versuchs nochmal."
+
+#: includes/class-ds-more-privacy-options.php:90
+msgid "Visible to the World. Allow search engines to index this site."
+msgstr "Sichtbar für die Welt. Suchmaschinen können die Seite indizieren."
+
+#: includes/class-ds-more-privacy-options.php:91
+msgid "World"
+msgstr "Welt"
+
+#: includes/class-ds-more-privacy-options.php:95
+msgid ""
+"Visible to the World. Discourage search engines from indexing this site."
+msgstr ""
+"Sichtbar für die Welt. Suchmaschinen (sollen) diese Seite nicht indizieren."
+
+#: includes/class-ds-more-privacy-options.php:96
+msgid "World, discourage search engines"
+msgstr "Welt, die Seite soll nicht von Suchmaschinen gefunden werden."
+
+#: includes/class-ds-more-privacy-options.php:100
+msgid "Visible only to registered users of this network."
+msgstr "Nur für registrierte Nutzer*innen des Netzwerks sichtbar."
+
+#: includes/class-ds-more-privacy-options.php:101
+msgid "Network users"
+msgstr "Netzwerk-Nutzer*innen"
+
+#: includes/class-ds-more-privacy-options.php:105
+msgid "Visible only to registered users of this site."
+msgstr "Nur für registrierte Nutzer dieser Seite sichtbar."
+
+#: includes/class-ds-more-privacy-options.php:106
+msgid "Blog users"
+msgstr "Blog Nutzer*innen"
+
+#: includes/class-ds-more-privacy-options.php:110
+msgid "Visible only to administrators of this site."
+msgstr "Nur für Administratoren dieser Seite sichtbar."
+
+#: includes/class-ds-more-privacy-options.php:111
+msgid "Blog Admins"
+msgstr "Blog Administratoren"
+
+#: includes/class-ds-more-privacy-options.php:135
+msgid "We don't have a description for the given privacy id."
+msgstr "Es gibt für die angegebene Privatsphären-id keine Beschreibung."
 
 #. Description of the plugin
 msgid ""

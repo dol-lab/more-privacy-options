@@ -212,7 +212,7 @@ class Ds_More_Privacy_Hooks {
 			$contact_users = rtrim( $contact_users, ', ' );
 		}
 
-		$message = "$privacy_description <br>$info<br> $contact_users.";
+		$message = "$privacy_description <br>$info $contact_users.";
 
 		$message     = apply_filters( 'more_privacy_closed_message', $message, $priv_id, $privacy_description );
 		$back        = __( 'Go back' );

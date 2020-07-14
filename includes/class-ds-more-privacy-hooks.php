@@ -222,13 +222,16 @@ class Ds_More_Privacy_Hooks {
 		/**
 		 * The wp_shake_js triggers the first form (thats why we use a form container here).
 		 */
-		$container = "
-			<form id='loginform' class='message'>$message</form>
-			<p id='backtoblog'><a href='javascript:history.go(-1)'>← $back</a> | $network_url</p>
-		";
+		$container = apply_filters(
+			'more_privacy_custom_login_form',
+			array(
+				"<form id='loginform' class='message'>$message</form>",
+				"<p id='backtoblog'><a href='javascript:history.go(-1)'>← $back</a> | $network_url</p>",
+			)
+		);
 
 		add_action( 'login_head', 'wp_shake_js', 12 );
-		login_header( '', $container, $error );
+		login_header( '', implode( '', $container ), $error );
 		die();
 	}
 

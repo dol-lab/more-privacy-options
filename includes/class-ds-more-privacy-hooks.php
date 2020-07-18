@@ -261,13 +261,19 @@ class Ds_More_Privacy_Hooks {
 
 	/**
 	 * Triggered by the hook "update_blog_public".
+	 * Email Admin about privacy changes.
 	 *
 	 * @return void
 	 */
 	public function mail_super_admin( $blog_id, $privacy_id ) {
 
 		if ( ! get_site_option( $this->options['notify_admin'], false ) ) {
-			return;
+			return; // don't send emails if the option is disabled.
+		}
+
+		// Bail if the site's database tables do not exist (yet).
+		if ( ! wp_is_site_initialized( $blog_id ) ) {
+			return; // don't send emails for newly created blogs.
 		}
 
 		$to_new   = $this->mpo->get_privacy_description( $privacy_id );

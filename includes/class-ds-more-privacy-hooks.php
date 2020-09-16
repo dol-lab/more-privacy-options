@@ -242,12 +242,12 @@ class Ds_More_Privacy_Hooks {
 	 * @return void
 	 */
 	public function display_not_multisite_notice() {
-		$msg = __( 'More Privacy Options is a plugin just for multisites, please deactivate it.', 'more-privacy-options' );
-		echo '
-			<div class="error">
-				<p>' . esc_html( $msg ) . '</p>
+		$msg = esc_html__( 'More Privacy Options is a plugin just for multisites, please deactivate it.', 'more-privacy-options' );
+		echo "
+			<div class='error'>
+				<p>$msg</p>
 			</div>
-		'; // phpcs:ignore WordPress.Security.EscapeOutput
+		";
 	}
 
 	/**

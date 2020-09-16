@@ -177,8 +177,8 @@ class Ds_More_Privacy_Hooks {
 	}
 
 	/**
-	 * Triggered by the action "login_form_privacy" in wp-login.php.
-	 * Check login_form.*.
+	 * Triggered by the action "login_form_privacy" in wp-login.php (find with "login_form.*")
+	 *
 	 * Only accessible by logged in users.
 	 * Shows when a user can not access a blog (so it's not really a login form but uses the same UI).
 	 *
@@ -229,9 +229,8 @@ class Ds_More_Privacy_Hooks {
 				"<p id='backtoblog'><a href='javascript:history.go(-1)'>← $back</a> | $network_url</p>",
 			)
 		);
-
-		add_action( 'login_head', 'wp_shake_js', 12 );
 		login_header( '', implode( '', $container ), $error );
+		wp_shake_js();
 		die();
 	}
 

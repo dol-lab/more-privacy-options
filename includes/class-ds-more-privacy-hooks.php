@@ -135,16 +135,17 @@ class Ds_More_Privacy_Hooks {
 	}
 
 	/**
-	 * Triggered by the action "template_redirect".
+	 * Triggered by the action "send_headers".
 	 * "This action hook executes just before WordPress determines which template page to load.
 	 * It is a good hook to use if you need to do a redirect with full knowledge of the content that has been queried."
 	 *
 	 * The main "enty-point" for checking weather a user can access a blog.
 	 * Triggers a redirect if the user is not allowed to access.
 	 *
+	 * @param WP $wp instance of WP object passed by `send_headers` action hook.
 	 * @return void
 	 */
-	public function maybe_redirect() {
+	public function maybe_redirect( $wp ) {
 
 		if ( $this->mpo->can_user_access_current_blog() ) {
 			return;
@@ -162,7 +163,7 @@ class Ds_More_Privacy_Hooks {
 		}
 
 		if ( ! is_user_logged_in() ) {
-			if ( is_feed() ) {
+			if ( array_key_exists( 'feed', $wp->query_vars ) ) {
 				$this->ds_feed_login();
 			} else {
 				auth_redirect();

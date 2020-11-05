@@ -164,7 +164,16 @@ class Ds_More_Privacy_Hooks {
 
 		if ( ! is_user_logged_in() ) {
 			if ( array_key_exists( 'feed', $wp->query_vars ) ) {
-				$this->ds_feed_login();
+				/**
+				 * Filter to allow or deny unprotected event feeds, defaults to false aka protected.
+				 *
+				 * @see https://github.com/dol-lab/spaces-partners/issues/36
+				 */
+				if ( apply_filters( 'spaces.more-privacy-options.allow-event-feeds', false ) && 'eo-events' === $wp->query_vars['feed'] ) {
+					return;
+				} else {
+					$this->ds_feed_login();
+				}
 			} else {
 				auth_redirect();
 			}

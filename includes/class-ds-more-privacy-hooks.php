@@ -400,7 +400,8 @@ class Ds_More_Privacy_Hooks {
 		$long    = $this->mpo->get_privacy_description( $details->public );
 		$icon    = $this->mpo->get_privacy_description( $details->public, 'icon' );
 		$short   = $this->mpo->get_privacy_description( $details->public, 'short' );
-		echo "<p class='$icon dashicons-before' title='$long'> $short</p>"; // phpcs:ignore WordPress.Security.EscapeOutput
+		$icon    = ( strpos( $icon, 'dashicons' ) !== false ) ? $icon . ' dashicons-before' : $icon;
+		echo "<p title='$long'><i class='$icon'></i> $short</p>"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**

@@ -291,12 +291,9 @@ class Ds_More_Privacy_Hooks {
 
 		$setting_url  = network_admin_url( 'settings.php' );
 		$disable_text = esc_html( __( 'Disable this type of emails in Network admin: ', 'more-privacy-options' ) );
-		$message      = "
-				$subject
-				\r\n\r\n" .
-				esc_html( __( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) ) . "
-				$disable_text $setting_url
-		";
+		$message      = "$subject \r\n\r\n" .
+				esc_html( __( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) ) .
+				"$disable_text $setting_url";
 
 		$headers = 'Auto-Submitted: auto-generated';
 		wp_mail(

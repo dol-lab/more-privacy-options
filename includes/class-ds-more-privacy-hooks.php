@@ -329,7 +329,11 @@ class Ds_More_Privacy_Hooks {
 		remove_action( 'login_head', 'noindex' );
 		remove_action( 'wp_head', 'noindex', 1 ); // priority 1.
 		if ( 1 !== $this->mpo->get_current_privacy_id() ) {
-			wp_no_robots();
+			if ( function_exists( 'wp_robots_no_robots') ){
+				add_filter( 'wp_robots', 'wp_robots_no_robots' );
+			} else {
+				wp_no_robots();
+			}
 		}
 	}
 

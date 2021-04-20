@@ -89,26 +89,31 @@ class Ds_More_Privacy_Options {
 			1   => array( // this is WP-default. Just here for completeness.
 				'long'  => esc_html__( 'Visible to the World. Allow search engines to index this site.', 'more-privacy-options' ),
 				'short' => esc_html__( 'World', 'more-privacy-options' ),
+				'class' => 'visible-world-searchable',
 				'icon'  => 'dashicons-admin-site',
 			),
 			0   => array( // this is WP-default. Just here for completeness.
 				'long'  => esc_html__( 'Visible to the World. Discourage search engines from indexing this site.', 'more-privacy-options' ),
 				'short' => esc_html__( 'World, discourage search engines', 'more-privacy-options' ),
+				'class' => 'visible-world-un-searchable',
 				'icon'  => 'dashicons-admin-site',
 			),
 			- 1 => array(
 				'long'  => esc_html__( 'Visible only to registered users of this network.', 'more-privacy-options' ),
 				'short' => esc_html__( 'Network users', 'more-privacy-options' ),
+				'class' => 'visible-registered-users-network',
 				'icon'  => 'dashicons-networking',
 			),
 			- 2 => array(
 				'long'  => esc_html__( 'Visible only to registered users of this site.', 'more-privacy-options' ),
 				'short' => esc_html__( 'Blog users', 'more-privacy-options' ),
+				'class' => 'visible-registered-users-blog',
 				'icon'  => 'dashicons-groups',
 			),
 			- 3 => array(
 				'long'  => esc_html__( 'Visible only to administrators of this site.', 'more-privacy-options' ),
 				'short' => esc_html__( 'Blog Admins', 'more-privacy-options' ),
+				'class' => 'visible-registered-admins-blog',
 				'icon'  => 'dashicons-businessman',
 			),
 		);

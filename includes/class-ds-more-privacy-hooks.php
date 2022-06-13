@@ -55,7 +55,6 @@ class Ds_More_Privacy_Hooks {
 		add_filter( 'manage_sites-network_columns', array( $this, 'add_sites_column' ), 10, 1 );
 		add_action( 'manage_sites_custom_column', array( $this, 'manage_sites_custom_column' ), 10, 3 );
 
-		// add_action( 'template_redirect', array( $this, 'maybe_redirect' ) ); // template_redirect does not necessarliy trigger when accesssing wp-activate.php?
 		add_action( 'send_headers', array( $this, 'maybe_redirect' ) );
 
 		add_action( 'login_form', array( $this, 'login_message' ) );
@@ -153,8 +152,8 @@ class Ds_More_Privacy_Hooks {
 
 		if ( $this->is_activate_request() ) {
 			if ( ! is_main_site() ) {
-				$querystring      = '?' . http_build_query( $_GET );
-				$network_home_url = network_home_url( 'wp-activate.php' ) . $querystring;
+				$query_string     = '?' . http_build_query( $_GET );
+				$network_home_url = network_home_url( 'wp-activate.php' ) . $query_string;
 				$redirect_url     = apply_filters( 'more_privacy_redirect_activate_request', $network_home_url );
 				wp_safe_redirect( $redirect_url );
 				exit();
@@ -329,7 +328,7 @@ class Ds_More_Privacy_Hooks {
 		remove_action( 'login_head', 'noindex' );
 		remove_action( 'wp_head', 'noindex', 1 ); // priority 1.
 		if ( 1 !== $this->mpo->get_current_privacy_id() ) {
-			if ( function_exists( 'wp_robots_no_robots') ){
+			if ( function_exists( 'wp_robots_no_robots' ) ) {
 				add_filter( 'wp_robots', 'wp_robots_no_robots' );
 			} else {
 				wp_no_robots();
@@ -457,7 +456,7 @@ class Ds_More_Privacy_Hooks {
 	}
 
 	/**
-	 * Check if the current request is meant for user actication.
+	 * Check if the current request is meant for user activation.
 	 *
 	 * @return boolean
 	 */
@@ -592,7 +591,7 @@ class Ds_More_Privacy_Hooks {
 	}
 
 	/**
-	 * Add some errors if saving privacy-options in the netword-admin went wrong.
+	 * Add some errors if saving privacy-options in the network-admin went wrong.
 	 *
 	 * @return void
 	 */

@@ -138,7 +138,7 @@ class Ds_More_Privacy_Hooks {
 	 * "This action hook executes just before WordPress determines which template page to load.
 	 * It is a good hook to use if you need to do a redirect with full knowledge of the content that has been queried."
 	 *
-	 * The main "enty-point" for checking weather a user can access a blog.
+	 * The main "entry-point" for checking wether a user can access a blog.
 	 * Triggers a redirect if the user is not allowed to access.
 	 *
 	 * @param WP $wp instance of WP object passed by `send_headers` action hook.
@@ -470,7 +470,7 @@ class Ds_More_Privacy_Hooks {
 
 	/**
 	 * Triggered by the action "wpmu_options".
-	 * Create the settings page. You can decide weather the Visibility is managed per blog or all blogs are private.
+	 * Create the settings page. You can decide wether the Visibility is managed per blog or all blogs are private.
 	 *
 	 * @return void
 	 */

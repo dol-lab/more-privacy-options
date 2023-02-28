@@ -446,7 +446,6 @@ class Ds_More_Privacy_Hooks {
 			),
 			false
 		);
-		$user_id = is_wp_error( $user ) ? get_user_by( 'user_login', $user->user_login ) : null;
 		if ( is_wp_error( $user ) || ! $this->mpo->can_user_access_current_blog() ) {
 			$server_name = isset( $_SERVER['SERVER_NAME'] ) ? esc_url_raw( wp_unslash( $_SERVER['SERVER_NAME'] ) ) : '';
 			header( 'WWW-Authenticate: Basic realm="' . $server_name . '"' );

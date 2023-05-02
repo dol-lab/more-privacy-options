@@ -79,11 +79,33 @@ class Ds_More_Privacy_Hooks {
 
 		add_action( 'login_form_privacy', array( $this, 'custom_login_form' ) );
 
+		// make sure outsiders don't add comments in private blogs.
+		add_action( 'comments_open', array( $this, 'only_allow_logged_in_comment_in_private_blogs' ), 10, 2 );
+	}
+
+	/**
+	 * This helps to prevent spam in the following case:
+	 * - Your blog has been public, you set it to private
+	 * - There are still some spam-bots, which know the location to your (now private) posts.
+	 *
+	 * This only allows comments to posts, that are actually visible to the commenting user.
+	 * Otherwise "Sorry, comments are closed for this item." will be shown.
+	 *
+	 * @todo: you could restrict this further: don't allow comments from non-members in private blogs.
+	 *
+	 * @return void
+	 */
+	public function only_allow_logged_in_comment_in_private_blogs( bool $open, int $post_id ) {
+		if ( ! $open || is_user_logged_in() ) {
+			return $open;
+		}
+		$privacy = $this->mpo->get_current_privacy_id();
+		return ( $privacy > -1 ); // true if public, false otherwise.
 	}
 
 	/**
 	 * Triggered by the action "init".
-	 * Disbale REST-API if a user is not allowed to access a blog.
+	 * Disable REST-API if a user is not allowed to access a blog.
 	 */
 	public function maybe_disable_rest() {
 
@@ -122,6 +144,7 @@ class Ds_More_Privacy_Hooks {
 		);
 		echo "<p>$desc</p><br/>"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
+
 	/**
 	 * Triggered by the action "privacy_on_link_title" and "privacy_on_link_text".
 	 *
@@ -241,7 +264,6 @@ class Ds_More_Privacy_Hooks {
 		die();
 	}
 
-
 	/**
 	 * Triggered by the hook all_admin_notices.
 	 *
@@ -331,7 +353,7 @@ class Ds_More_Privacy_Hooks {
 			if ( function_exists( 'wp_robots_no_robots' ) ) {
 				add_filter( 'wp_robots', 'wp_robots_no_robots' );
 			} else {
-				wp_no_robots();
+				wp_no_robots(); // legacy support.
 			}
 		}
 	}
@@ -438,7 +460,7 @@ class Ds_More_Privacy_Hooks {
 	 * @return void
 	 */
 	private function ds_feed_login() {
-		$user    = wp_signon(
+		$user = wp_signon(
 			array(
 				'user_login'    => isset( $_SERVER['PHP_AUTH_USER'] ) ? $_SERVER['PHP_AUTH_USER'] : '', // WPCS: sanitization ok. Sanitized by wp_authenticate.
 				'user_password' => isset( $_SERVER['PHP_AUTH_PW'] ) ? $_SERVER['PHP_AUTH_PW'] : '', // WPCS: sanitization ok.

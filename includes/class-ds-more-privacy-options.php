@@ -153,7 +153,9 @@ class Ds_More_Privacy_Options {
 
 	/**
 	 * The the privacy id of the current blog.
-	 * It is the 'blog_public' value stored in wp_blogs.
+	 * It is the lower one of:
+	 * - the blog option 'blog_public'
+	 * - and the site option 'ds_sitewide_privacy'
 	 *
 	 * @return int
 	 */

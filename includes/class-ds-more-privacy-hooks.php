@@ -245,7 +245,7 @@ class Ds_More_Privacy_Hooks {
 		$message = "$privacy_description <br>$info $contact_users.";
 
 		$message     = apply_filters( 'more_privacy_closed_message', $message, $priv_id, $privacy_description );
-		$back        = __( 'Go back' );
+		$back        = __( 'Go back', 'more-privacy-options' );
 		$network_url = untrailingslashit( network_site_url() );
 		$network_url = "<a href='$network_url'>" . str_replace( array( 'http://', 'https://' ), '', $network_url ) . '</a>';
 

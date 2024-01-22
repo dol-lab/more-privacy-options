@@ -217,6 +217,10 @@ class Ds_More_Privacy_Hooks {
 	public function custom_login_form() {
 		global $current_site;
 
+		if ( $this->mpo->can_user_access_current_blog() ) {
+			return; // don't show the form if the user is allowed to access the blog.
+		}
+
 		$priv_id             = $this->mpo->get_current_privacy_id();
 		$privacy_description = $this->mpo->get_privacy_description( $priv_id );
 

@@ -188,7 +188,13 @@ class Ds_More_Privacy_Options {
 	public function can_user_access_current_blog( int $user_id = null ) {
 
 		$priv_id = $this->get_current_privacy_id();
+		$user_id = ( $user_id ) ? $user_id : get_current_user_id();
+		$blog_id = get_current_blog_id();
+		return apply_filters( 'more_privacy_can_access', $this->can_access( $user_id, $blog_id, $priv_id ), $user_id, $blog_id, $priv_id );
 
+	}
+
+	private function can_access( int $user_id, int $blog_id, int $priv_id ) {
 		/**
 		 * Blog is public and privacy is managed per blog
 		 * or sitewide privacy is public (this plugin doesn't make sense in this case :).
@@ -210,8 +216,6 @@ class Ds_More_Privacy_Options {
 		if ( -1 === $priv_id ) {
 			return true;
 		}
-		$user_id = ( $user_id ) ? $user_id : get_current_user_id();
-		$blog_id = get_current_blog_id();
 
 		if ( is_super_admin( $user_id ) ) {
 			return true;

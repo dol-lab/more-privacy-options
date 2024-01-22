@@ -14,6 +14,8 @@
  * Author: D. Sader
  * Author URI: http://dsader.snowotherway.org/
  * Text Domain: more-privacy-options
+ * Requires at least: 5.9.0
+ * Tested up to: 6.4.2
  * Domain Path: /languages
  * Network: true
  *

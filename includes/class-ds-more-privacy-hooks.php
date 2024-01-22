@@ -210,7 +210,7 @@ class Ds_More_Privacy_Hooks {
 	 * Triggered by the action "login_form_privacy" in wp-login.php (find with "login_form.*")
 	 *
 	 * Only accessible by logged in users.
-	 * Shows when a user can not access a blog (so it's not really a login form but uses the same UI).
+	 * Shows when a user can not access a blog (so it's not really a login form but uses a similar UI).
 	 *
 	 * @return void
 	 */
@@ -224,20 +224,25 @@ class Ds_More_Privacy_Hooks {
 
 		$contact_users  = '';
 		$blogname       = get_bloginfo( 'name' );
-		$sitename       = $current_site->site_name;
+		$site_name      = $current_site->site_name;
 		$site_member_at = esc_html( __( 'Site membership at', 'more-privacy-options' ) );
 
-		$users = get_users();
+		// get all users with the capability to promote users.
+		$users = get_users(
+			array(
+				'capability' => 'promote_users',
+				'number'     => 50, // limit to 50 users, to avoid memory issues.
+			)
+		);
+
 		foreach ( $users as $user ) {
-			if ( user_can( $user->ID, 'add_users' ) ) {
-				$contact_users .= "<a href='mailto:$user->user_email?subject=$site_member_at [$blogname] - $sitename'>$user->display_name</a>, ";
-			}
+			$contact_users .= "<a href='mailto:$user->user_email?subject=$site_member_at [$blogname] - $site_name'>$user->display_name</a>, ";
 		}
 
 		$info = esc_html( __( 'To become a member of this site, contact', 'more-privacy-options' ) );
 		if ( '' === $contact_users ) {
 			$admin_mail    = get_option( 'admin_email' );
-			$contact_users = "$info <a href='mailto:$admin_mail?subject=$site_member_at [$blogname] - $sitename'>$admin_mail</a>";
+			$contact_users = "$info <a href='mailto:$admin_mail?subject=$site_member_at [$blogname] - $site_name'>$admin_mail</a>";
 		} else {
 			$contact_users = rtrim( $contact_users, ', ' );
 		}

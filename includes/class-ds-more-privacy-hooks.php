@@ -81,6 +81,9 @@ class Ds_More_Privacy_Hooks {
 
 		// make sure outsiders don't add comments in private blogs.
 		add_action( 'comments_open', array( $this, 'only_allow_logged_in_comment_in_private_blogs' ), 10, 2 );
+
+		// disable XML-RPC methods that require authentication (until somebody implements/needs it).
+		add_filter( 'xmlrpc_enabled', '__return_false' );
 	}
 
 	/**
@@ -322,7 +325,7 @@ class Ds_More_Privacy_Hooks {
 		$setting_url  = network_admin_url( 'settings.php' );
 		$disable_text = esc_html( __( 'Disable this type of emails in Network admin: ', 'more-privacy-options' ) );
 		$message      = "$subject \r\n\r\n" .
-				esc_html( __( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) ) .
+				esc_html__( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) .
 				"$disable_text $setting_url";
 
 		$headers = 'Auto-Submitted: auto-generated';

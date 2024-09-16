@@ -60,7 +60,7 @@ class Ds_More_Privacy_Hooks {
 		add_action( 'login_form', array( $this, 'login_message' ) );
 		add_filter( 'privacy_on_link_title', array( $this, 'header_title_link' ) );
 		add_filter( 'privacy_on_link_text', array( $this, 'header_title_link' ) );
-		add_filter('robots_txt', array($this, 'filter_robots'), 10, 2);
+		add_filter( 'robots_txt', array( $this, 'filter_robots' ), 10, 2 );
 
 		// fixes noindex meta.
 		add_action( 'wp_head', array( $this, 'noindex' ), 0 );

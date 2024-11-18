@@ -34,8 +34,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-load_plugin_textdomain( 'more-privacy-options', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 // Load plugin class files.
 require_once( 'includes/class-ds-more-privacy-options.php' );
 require_once( 'includes/class-ds-more-privacy-hooks.php' );

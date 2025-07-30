@@ -183,13 +183,11 @@ class Ds_More_Privacy_Options {
 	 * @param int $user_id current user by default.
 	 * @return boolean
 	 */
-	public function can_user_access_current_blog( int $user_id = null ) {
-
+	public function can_user_access_current_blog( int $user_id = 0 ) {
 		$priv_id = $this->get_current_privacy_id();
 		$user_id = ( $user_id ) ? $user_id : get_current_user_id();
 		$blog_id = get_current_blog_id();
 		return apply_filters( 'more_privacy_can_access', $this->can_access( $user_id, $blog_id, $priv_id ), $user_id, $blog_id, $priv_id );
-
 	}
 
 	private function can_access( int $user_id, int $blog_id, int $priv_id ) {
@@ -244,7 +242,6 @@ class Ds_More_Privacy_Options {
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @see Spaces_Setup()
 	 * @return Main DS_More_Privacy_Options instance
 	 */
 	public static function instance( $parent ) {

@@ -6,13 +6,6 @@
 class Ds_More_Privacy_Options {
 
 	/**
-	 * Access via get_privacy_description function.
-	 *
-	 * @var array
-	 */
-	public $blog_privacy_descriptions = array();
-
-	/**
 	 * The capability that defines admins (more flexible than checking for role names).
 	 *
 	 * @var string
@@ -79,13 +72,16 @@ class Ds_More_Privacy_Options {
 	 * @return void
 	 */
 	public function init_vars() {
-
 		$this->sitewide_privacy = intval( get_site_option( 'ds_sitewide_privacy' ) );
+	}
 
-		/**
-		 * If you want to change the output here use the privacy_description - filter (documented below).
-		 */
-		$this->blog_privacy_descriptions = array(
+	/**
+	 * Get all privacy descriptions.
+	 *
+	 * @return array{long: string, short: string, class: string, icon: string}[]
+	 */
+	public function get_all_privacy_descriptions() {
+		return array(
 			1   => array( // this is WP-default. Just here for completeness.
 				'long'  => esc_html__( 'Visible to the World. Allow search engines to index this site.', 'more-privacy-options' ),
 				'short' => esc_html__( 'World', 'more-privacy-options' ),
@@ -128,10 +124,11 @@ class Ds_More_Privacy_Options {
 	 * @return string|WP_Error
 	 */
 	public function get_privacy_description( int $id, $type = 'long' ) {
-		if ( isset( $this->blog_privacy_descriptions[ $id ] ) ) {
+		$descriptions = $this->get_all_privacy_descriptions();
+		if ( isset( $descriptions[ $id ] ) ) {
 			return apply_filters(
 				'privacy_description',
-				esc_html( $this->blog_privacy_descriptions[ $id ][ $type ] ),
+				esc_html( $descriptions[ $id ][ $type ] ),
 				$id,
 				$type
 			);
@@ -145,10 +142,11 @@ class Ds_More_Privacy_Options {
 	 * @return array with keys long, short and icon
 	 */
 	public function get_privacy_level( int $id ) {
-		foreach ( $this->blog_privacy_descriptions[ $id ] as $type => $value ) {
-			$this->blog_privacy_descriptions[ $id ][ $type ] = $this->get_privacy_description( $id, $type );
+		$descriptions = $this->get_all_privacy_descriptions();
+		foreach ( $descriptions[ $id ] as $type => $value ) {
+			$descriptions[ $id ][ $type ] = $this->get_privacy_description( $id, $type );
 		}
-		return $this->blog_privacy_descriptions[ $id ];
+		return $descriptions[ $id ];
 	}
 
 	/**
@@ -273,5 +271,4 @@ class Ds_More_Privacy_Options {
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
 	}
-
 }

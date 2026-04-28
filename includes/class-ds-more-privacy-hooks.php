@@ -578,7 +578,7 @@ class Ds_More_Privacy_Hooks {
 
 		$option_name = $this->options['notify_admin'];
 		$active      = get_site_option( $option_name, true );
-		$checked     = checked( $active );
+		$checked     = checked( $active, true, false );
 		$notify      = esc_html( __( 'Notify super-admin', 'more-privacy-options' ) );
 		$text        = esc_html( __( 'Send emails about blog-privacy changes to super-admin.', 'more-privacy-options' ) );
 

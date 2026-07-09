@@ -181,7 +181,7 @@ class Ds_More_Privacy_Hooks {
 				$query_string     = '?' . http_build_query( $_GET );
 				$network_home_url = network_home_url( 'wp-activate.php' ) . $query_string;
 				$redirect_url     = apply_filters( 'more_privacy_redirect_activate_request', $network_home_url );
-				wp_safe_redirect( $redirect_url );
+				wp_safe_redirect( $redirect_url, 302, 'more-privacy-options: activate-request' );
 				exit();
 			}
 			return;
@@ -205,7 +205,7 @@ class Ds_More_Privacy_Hooks {
 		/**
 		 * If we are here privacy can only be < -1 .
 		 */
-		wp_safe_redirect( add_query_arg( 'action', 'privacy', wp_login_url() ) );
+		wp_safe_redirect( add_query_arg( 'action', 'privacy', wp_login_url() ), 302, 'more-privacy-options: privacy-wall' );
 		exit;
 	}
 
@@ -602,7 +602,7 @@ class Ds_More_Privacy_Hooks {
 	public function sitewide_privacy_update() {
 
 		if ( ! current_user_can( 'manage_network_options' ) ) {
-			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'caps', network_admin_url( 'settings.php' ) ) );
+			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'caps', network_admin_url( 'settings.php' ) ), 302, 'more-privacy-options: caps-error' );
 			exit();
 		}
 
@@ -618,7 +618,7 @@ class Ds_More_Privacy_Hooks {
 			update_site_option( $default_privacy_option_name, intval( $_POST[ $default_privacy_option_name ] ) );
 			update_site_option( $notify_admin_option_name, isset( $_POST[ $notify_admin_option_name ] ) ); // key is only present if 'on'.
 		} else {
-			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'others', network_admin_url( 'settings.php' ) ) );
+			wp_safe_redirect( add_query_arg( 'privacy-options-error', 'others', network_admin_url( 'settings.php' ) ), 302, 'more-privacy-options: nonce-error' );
 			exit();
 		}
 	}

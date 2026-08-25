@@ -64,6 +64,9 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 4.6 =
+* Prevent cross-site Multisite Taxonomies queries until this plugin's privacy rules can be applied per source site.
+
 = 4.0 =
 * improvements to how robots.txt are handled
 

@@ -42,6 +42,7 @@ class Ds_More_Privacy_Hooks {
 
 		add_action( 'init', array( $this, 'localization_init' ) );
 		add_action( 'init', array( $this, 'maybe_disable_rest' ) );
+		add_filter( 'multisite_wp_query_access', array( $this, 'disable_multisite_wp_query' ) );
 
 		// Network->Settings.
 		add_action( 'update_wpmu_options', array( $this, 'sitewide_privacy_update' ) );
@@ -84,6 +85,18 @@ class Ds_More_Privacy_Hooks {
 
 		// disable XML-RPC methods that require authentication (until somebody implements/needs it).
 		add_filter( 'xmlrpc_enabled', '__return_false' );
+	}
+
+	/**
+	 * Disable cross-blog post queries while this plugin's site access rules cannot be applied.
+	 *
+	 * @return WP_Error Access error.
+	 */
+	public function disable_multisite_wp_query() {
+		return new WP_Error(
+			'multisite_wp_query_more_privacy_options',
+			__( 'Cross-site post queries are unavailable while More Privacy Options is active.', 'more-privacy-options' )
+		);
 	}
 
 	/**

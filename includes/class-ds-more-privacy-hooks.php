@@ -263,27 +263,42 @@ class Ds_More_Privacy_Hooks {
 	/**
 	 * Triggered by the action "login_form_privacy" in wp-login.php (find with "login_form.*")
 	 *
-	 * Only accessible by logged in users.
-	 * Shows when a user can not access a blog (so it's not really a login form but uses a similar UI).
+	 * Shows when a logged-in user can not access a blog (so it's not really a login form but uses a similar UI).
+	 * Logged-out visitors get the regular login form instead: this page lists the admins' email addresses.
 	 *
 	 * @return void
 	 */
 	public function custom_login_form() {
 		global $current_site;
 
-		if ( $this->mpo->can_user_access_current_blog() ) {
-			return; // don't show the form if the user is allowed to access the blog.
+		if ( ! is_user_logged_in() || $this->mpo->can_user_access_current_blog() ) {
+			return; // wp-login.php falls back to the login form.
 		}
 
 		$priv_id             = $this->mpo->get_current_privacy_id();
 		$privacy_description = $this->mpo->get_privacy_description( $priv_id );
+		$privacy_description = is_wp_error( $privacy_description ) ? '' : $privacy_description;
 
 		$error = new WP_Error();
 
-		$contact_users  = '';
-		$blogname       = get_bloginfo( 'name' );
-		$site_name      = $current_site->site_name;
-		$site_member_at = esc_html( __( 'Site membership at', 'more-privacy-options' ) );
+		$subject = sprintf(
+			'%s [%s] - %s',
+			__( 'Site membership at', 'more-privacy-options' ),
+			wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
+			wp_specialchars_decode( $current_site->site_name, ENT_QUOTES )
+		);
+
+		/**
+		 * Markup for a mailto link to $email.
+		 *
+		 * @param string $email The address.
+		 * @param string $text  The link text.
+		 * @return string
+		 */
+		$mailto = function ( $email, $text ) use ( $subject ) {
+			$href = esc_url( 'mailto:' . $email . '?subject=' . rawurlencode( $subject ), array( 'mailto' ) );
+			return "<a href='$href'>" . esc_html( $text ) . '</a>';
+		};
 
 		// get all users with the capability to promote users.
 		$users = get_users(
@@ -293,24 +308,22 @@ class Ds_More_Privacy_Hooks {
 			)
 		);
 
+		$contact_links = array();
 		foreach ( $users as $user ) {
-			$contact_users .= "<a href='mailto:$user->user_email?subject=$site_member_at [$blogname] - $site_name'>$user->display_name</a>, ";
+			$contact_links[] = $mailto( $user->user_email, $user->display_name );
+		}
+		if ( ! $contact_links ) {
+			$admin_mail      = get_option( 'admin_email' );
+			$contact_links[] = $mailto( $admin_mail, $admin_mail );
 		}
 
-		$info = esc_html( __( 'To become a member of this site, contact', 'more-privacy-options' ) );
-		if ( '' === $contact_users ) {
-			$admin_mail    = get_option( 'admin_email' );
-			$contact_users = "$info <a href='mailto:$admin_mail?subject=$site_member_at [$blogname] - $site_name'>$admin_mail</a>";
-		} else {
-			$contact_users = rtrim( $contact_users, ', ' );
-		}
-
-		$message = "$privacy_description <br>$info $contact_users.";
+		$info    = esc_html( __( 'To become a member of this site, contact', 'more-privacy-options' ) );
+		$message = "$privacy_description <br>$info " . implode( ', ', $contact_links ) . '.';
 
 		$message     = apply_filters( 'more_privacy_closed_message', $message, $priv_id, $privacy_description );
-		$back        = __( 'Go back', 'more-privacy-options' );
+		$back        = esc_html( __( 'Go back', 'more-privacy-options' ) );
 		$network_url = untrailingslashit( network_site_url() );
-		$network_url = "<a href='$network_url'>" . str_replace( array( 'http://', 'https://' ), '', $network_url ) . '</a>';
+		$network_url = "<a href='" . esc_url( $network_url ) . "'>" . esc_html( str_replace( array( 'http://', 'https://' ), '', $network_url ) ) . '</a>';
 
 		/**
 		 * The wp_shake_js triggers the first form (thats why we use a form container here).

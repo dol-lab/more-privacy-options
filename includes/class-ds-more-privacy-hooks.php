@@ -41,7 +41,7 @@ class Ds_More_Privacy_Hooks {
 	private function add_hooks() {
 
 		add_action( 'init', array( $this, 'localization_init' ) );
-		add_action( 'init', array( $this, 'maybe_disable_rest' ) );
+		add_filter( 'rest_authentication_errors', array( $this, 'maybe_deny_rest' ), 101 );
 		add_action( 'admin_init', array( $this, 'maybe_deny_admin_request' ), 0 );
 		add_filter( 'multisite_wp_query_access', array( $this, 'disable_multisite_wp_query' ) );
 
@@ -121,32 +121,35 @@ class Ds_More_Privacy_Hooks {
 	}
 
 	/**
-	 * Triggered by the action "init".
-	 * Disable REST-API if a user is not allowed to access a blog.
+	 * Triggered by the filter "rest_authentication_errors".
+	 * Deny the REST-API if a user is not allowed to access a blog.
+	 *
+	 * Runs after core's checks (application passwords at 90, cookie nonce at 100), so it judges
+	 * the user the request is served as: core drops a cookie login without nonce to user 0 at 100,
+	 * and asking earlier would let that anonymous request through (readable cross-origin, as REST
+	 * answers with credentialed CORS headers).
+	 *
+	 * @param WP_Error|null|true $result Error from an earlier check, true if authenticated, null if no method was used.
+	 * @return WP_Error|null|true
 	 */
-	public function maybe_disable_rest() {
-
-		global $wp_version;
-
-		if ( $this->mpo->can_user_access_current_blog() ) {
-			return;
+	public function maybe_deny_rest( $result ) {
+		if ( is_wp_error( $result ) || $this->mpo->can_user_access_current_blog() ) {
+			return $result;
 		}
+		$msg = $this->describe( $this->mpo->get_current_privacy_id() );
+		return new WP_Error( 'rest_cannot_access', $msg . $this->by, array( 'status' => 401 ) );
+	}
 
-		add_filter(
-			'rest_authentication_errors',
-			function( $result ) {
-				$msg = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
-				return new WP_Error( 'rest_cannot_access', $msg . $this->by, array( 'status' => 401 ) );
-			}
-		);
-
-		if ( version_compare( $wp_version, '4.7', '<' ) ) { // Legacy support, WP v <= 4.7.
-			add_filter( 'json_enabled', '__return_false' ); // Filters for WP-API version 1.x .
-			add_filter( 'json_jsonp_enabled', '__return_false' ); // Filters for WP-API version 1.x .
-
-			add_filter( 'rest_enabled', '__return_false' ); // Filters for WP-API version 2.x.
-			add_filter( 'rest_jsonp_enabled', '__return_false' ); // Filters for WP-API version 2.x.
-		}
+	/**
+	 * A privacy description, empty for unknown privacy ids (instead of a WP_Error).
+	 *
+	 * @param int    $id   The privacy id.
+	 * @param string $type long|short|class|icon.
+	 * @return string
+	 */
+	private function describe( $id, $type = 'long' ) {
+		$description = $this->mpo->get_privacy_description( (int) $id, $type );
+		return is_wp_error( $description ) ? '' : $description;
 	}
 
 	/**
@@ -181,8 +184,7 @@ class Ds_More_Privacy_Hooks {
 			return;
 		}
 
-		$msg = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
-		$msg = is_wp_error( $msg ) ? '' : $msg;
+		$msg = $this->describe( $this->mpo->get_current_privacy_id() );
 		wp_die( $msg . $this->by, '', array( 'response' => 401 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
@@ -193,7 +195,7 @@ class Ds_More_Privacy_Hooks {
 	 * @return void
 	 */
 	public function login_message() {
-		$desc = $this->mpo->get_privacy_description(
+		$desc = $this->describe(
 			$this->mpo->get_current_privacy_id()
 		);
 		echo "<p>$desc</p><br/>"; // phpcs:ignore WordPress.Security.EscapeOutput
@@ -205,7 +207,7 @@ class Ds_More_Privacy_Hooks {
 	 * @return string
 	 */
 	public function header_title_link() {
-		return $this->mpo->get_privacy_description(
+		return $this->describe(
 			$this->mpo->get_current_privacy_id()
 		);
 	}
@@ -276,8 +278,7 @@ class Ds_More_Privacy_Hooks {
 		}
 
 		$priv_id             = $this->mpo->get_current_privacy_id();
-		$privacy_description = $this->mpo->get_privacy_description( $priv_id );
-		$privacy_description = is_wp_error( $privacy_description ) ? '' : $privacy_description;
+		$privacy_description = $this->describe( $priv_id );
 
 		$error = new WP_Error();
 
@@ -380,7 +381,7 @@ class Ds_More_Privacy_Hooks {
 			return; // don't send emails for newly created blogs.
 		}
 
-		$to_new   = $this->mpo->get_privacy_description( $privacy_id );
+		$to_new   = $this->describe( $privacy_id );
 		$blogname = get_blog_option( $blog_id, 'blogname' );
 		$blog_url = get_site_url( $blog_id );
 		$subject  = esc_html( __( 'Site changed reading visibility settings.', 'more-privacy-options' ) )
@@ -412,8 +413,9 @@ class Ds_More_Privacy_Hooks {
 	 */
 	public function filter_robots( $output, $public ) {
 		if ( intval( $public ) < 0 ) {
-			return "Disallow: /\n" . $output;
+			return "User-agent: *\nDisallow: /\n"; // A Disallow outside a User-agent group is ignored.
 		}
+		return $output;
 	}
 
 	/**
@@ -476,7 +478,7 @@ class Ds_More_Privacy_Hooks {
 	 */
 	private function get_input_field( int $privacy_id, int $checked_id, string $name ) {
 		$checked     = ( $privacy_id === $checked_id ) ? 'checked' : '';
-		$description = $this->mpo->get_privacy_description( $privacy_id );
+		$description = $this->describe( $privacy_id );
 		return "<input id='blog-private$privacy_id' type='radio' name='$name' value='$privacy_id' $checked> $description ";
 	}
 
@@ -503,9 +505,9 @@ class Ds_More_Privacy_Hooks {
 			return;
 		}
 		$details = get_blog_details( $blog_id );
-		$long    = $this->mpo->get_privacy_description( $details->public );
-		$icon    = $this->mpo->get_privacy_description( $details->public, 'icon' );
-		$short   = $this->mpo->get_privacy_description( $details->public, 'short' );
+		$long    = $this->describe( $details->public );
+		$icon    = $this->describe( $details->public, 'icon' );
+		$short   = $this->describe( $details->public, 'short' );
 		$icon    = ( strpos( $icon, 'dashicons' ) !== false ) ? $icon . ' dashicons-before' : $icon;
 		echo "<p title='$long'><i class='$icon'></i> $short</p>"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
@@ -573,9 +575,6 @@ class Ds_More_Privacy_Hooks {
 	 */
 	public function sitewide_privacy_options_page() {
 
-		add_settings_error( 'more-privacy-options', 'error', esc_html__( 'Something went wrong saving privacy options.', 'more-privacy-options' ) );
-		settings_errors( 'more_privacy_options' );
-
 		$title = esc_html__( 'Network Visibility', 'more-privacy-options' );
 
 		$nonce_action = 'mpo_' . get_current_blog_id();
@@ -612,7 +611,7 @@ class Ds_More_Privacy_Hooks {
 		$option_name           = $this->options['default_privacy'];
 		$setting               = intval( get_site_option( $option_name, 1 ) );
 		$checked_network_users = ( -1 === $setting ) ? 'checked' : '';
-		$checked_per_site      = ( 1 === $setting ) ? 'checked=' : '';
+		$checked_per_site      = ( 1 === $setting ) ? 'checked' : '';
 
 		return "
 			<tr valign='top'>
@@ -653,7 +652,7 @@ class Ds_More_Privacy_Hooks {
 					<input name='$option_name' id='$option_name' type='checkbox' $checked>
 					<label for='$option_name'>$text</label>
 				</td>
-			<tr>
+			</tr>
 		";
 	}
 
@@ -699,7 +698,7 @@ class Ds_More_Privacy_Hooks {
 			return;
 		}
 		$msg = ( 'caps' === $_GET['privacy-options-error'] )
-		? esc_html__( 'You are not allowed to manage network options. Network visibility options have not been saved.' )
+		? esc_html__( 'You are not allowed to manage network options. Network visibility options have not been saved.', 'more-privacy-options' )
 		: esc_html__( 'Something went wrong saving network visibility options. Please try again.', 'more-privacy-options' );
 
 		add_settings_error( 'more-privacy-options', 'error', $msg );

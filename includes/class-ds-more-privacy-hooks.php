@@ -247,9 +247,18 @@ class Ds_More_Privacy_Hooks {
 				 */
 				if ( apply_filters( 'more_privacy_allow_feeds', false, $wp->query_vars['feed'] ) ) {
 					return;
-				} else {
-					$this->ds_feed_login();
 				}
+				/**
+				 * No HTTP Basic login for feed readers: a wp_signon() here would tell a right password
+				 * from a wrong one, unthrottled and without the login form's 2FA.
+				 */
+				// Plain text: on feeds wp_die() answers in XML and escapes markup.
+				wp_die(
+					/* translators: %s: URL of the site. */
+					sprintf( esc_html__( 'This feed belongs to a private site, so feed readers can not show it. Log in on the website to read it: %s', 'more-privacy-options' ), esc_url_raw( home_url( '/' ) ) ), // phpcs:ignore WordPress.Security.EscapeOutput
+					esc_html__( 'Private feed', 'more-privacy-options' ),
+					array( 'response' => 401 )
+				);
 			} else {
 				auth_redirect();
 			}
@@ -361,7 +370,7 @@ class Ds_More_Privacy_Hooks {
 	 * @return void
 	 */
 	public function localization_init() {
-		load_plugin_textdomain( 'more-privacy-options', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'more-privacy-options', false, dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/' );
 	}
 
 	/**
@@ -526,31 +535,6 @@ class Ds_More_Privacy_Hooks {
 				$input = $this->get_input_field( $opt_id, $this->mpo->get_current_privacy_id(), 'blog_public' ) . '<br>';
 				echo "<br><label for='blog-private$opt_id' class='checkbox' >$input</label>"; // phpcs:ignore WordPress.Security.EscapeOutput
 			}
-		}
-	}
-
-	/**
-	 * Tries to authenticate a (not logged in) user via $_SERVER['PHP_AUTH_USER'].
-	 * Dies if user is not allowed.
-	 *
-	 * @todo: remove? does anybody use feeds? security: open brute force - option.
-	 *
-	 * @return void
-	 */
-	private function ds_feed_login() {
-		$user = wp_signon(
-			array(
-				'user_login'    => isset( $_SERVER['PHP_AUTH_USER'] ) ? $_SERVER['PHP_AUTH_USER'] : '', // WPCS: sanitization ok. Sanitized by wp_authenticate.
-				'user_password' => isset( $_SERVER['PHP_AUTH_PW'] ) ? $_SERVER['PHP_AUTH_PW'] : '', // WPCS: sanitization ok.
-				'remember'      => true,
-			),
-			false
-		);
-		if ( is_wp_error( $user ) || ! $this->mpo->can_user_access_current_blog() ) {
-			$server_name = isset( $_SERVER['SERVER_NAME'] ) ? esc_url_raw( wp_unslash( $_SERVER['SERVER_NAME'] ) ) : '';
-			header( 'WWW-Authenticate: Basic realm="' . $server_name . '"' );
-			header( 'HTTP/1.0 401 Unauthorized' );
-			die();
 		}
 	}
 

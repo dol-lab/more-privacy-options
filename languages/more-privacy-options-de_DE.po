@@ -159,3 +159,13 @@ msgstr "Welt"
 #: includes/class-ds-more-privacy-options.php:97
 msgid "World, discourage search engines"
 msgstr "Welt, die Seite soll nicht von Suchmaschinen gefunden werden."
+
+#. translators: %s: URL of the site.
+#: includes/class-ds-more-privacy-hooks.php
+#, php-format
+msgid "This feed belongs to a private site, so feed readers can not show it. Log in on the website to read it: %s"
+msgstr "Dieser Feed gehört zu einer privaten Seite, deshalb können Feed-Reader ihn nicht anzeigen. Melde dich auf der Website an, um ihn zu lesen: %s"
+
+#: includes/class-ds-more-privacy-hooks.php
+msgid "Private feed"
+msgstr "Privater Feed"

@@ -42,6 +42,7 @@ class Ds_More_Privacy_Hooks {
 
 		add_action( 'init', array( $this, 'localization_init' ) );
 		add_action( 'init', array( $this, 'maybe_disable_rest' ) );
+		add_action( 'admin_init', array( $this, 'maybe_deny_admin_request' ), 0 );
 		add_filter( 'multisite_wp_query_access', array( $this, 'disable_multisite_wp_query' ) );
 
 		// Network->Settings.
@@ -146,6 +147,43 @@ class Ds_More_Privacy_Hooks {
 			add_filter( 'rest_enabled', '__return_false' ); // Filters for WP-API version 2.x.
 			add_filter( 'rest_jsonp_enabled', '__return_false' ); // Filters for WP-API version 2.x.
 		}
+	}
+
+	/**
+	 * Triggered by the action "admin_init".
+	 * Deny admin-ajax.php and admin-post.php if a user is not allowed to access a blog.
+	 * Both never reach "send_headers", so without this their handlers (nopriv ones included)
+	 * would serve a private blog's data to anyone.
+	 *
+	 * @return void
+	 */
+	public function maybe_deny_admin_request() {
+		global $pagenow;
+
+		if ( ! wp_doing_ajax() && 'admin-post.php' !== $pagenow ) {
+			return;
+		}
+
+		if ( $this->mpo->can_user_access_current_blog() ) {
+			return;
+		}
+
+		/**
+		 * Filter the actions which stay available on blogs the user can not access.
+		 * By default the ones core needs on wp-login.php and for expired sessions.
+		 *
+		 * @param string[] $actions Exact values of $_REQUEST['action'].
+		 */
+		$allowed = apply_filters( 'more_privacy_allowed_admin_actions', array( 'heartbeat', 'generate-password' ) );
+		// Compared unsanitized: core dispatches on the raw value, a sanitized one could match a different action.
+		$action = isset( $_REQUEST['action'] ) ? wp_unslash( $_REQUEST['action'] ) : ''; // phpcs:ignore WordPress.Security
+		if ( is_string( $action ) && in_array( $action, (array) $allowed, true ) ) {
+			return;
+		}
+
+		$msg = $this->mpo->get_privacy_description( $this->mpo->get_current_privacy_id() );
+		$msg = is_wp_error( $msg ) ? '' : $msg;
+		wp_die( $msg . $this->by, '', array( 'response' => 401 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**

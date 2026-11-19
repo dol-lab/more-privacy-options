@@ -44,7 +44,7 @@ msgstr "Standard Sichtbarkeit"
 
 #: includes/class-ds-more-privacy-hooks.php:326
 msgid "Disable this type of emails in Network admin: "
-msgstr "Deaktiviere diese art von Nachrichten in der Netzwerk-Administration:"
+msgstr "Deaktiviere diese Art von Nachrichten in der Netzwerk-Administration:"
 
 #: includes/class-ds-more-privacy-hooks.php:260
 msgid "Go back"

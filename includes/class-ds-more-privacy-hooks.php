@@ -393,14 +393,13 @@ class Ds_More_Privacy_Hooks {
 		$to_new   = $this->describe( $privacy_id );
 		$blogname = get_blog_option( $blog_id, 'blogname' );
 		$blog_url = get_site_url( $blog_id );
-		$subject  = esc_html( __( 'Site changed reading visibility settings.', 'more-privacy-options' ) )
+		// Plain-text mail: no HTML escaping, it would show up as entities.
+		$subject = __( 'Site changed reading visibility settings.', 'more-privacy-options' )
 			. " $blogname [ID: $blog_id, $blog_url] => $to_new";
-
-		$setting_url  = network_admin_url( 'settings.php' );
-		$disable_text = esc_html( __( 'Disable this type of emails in Network admin: ', 'more-privacy-options' ) );
-		$message      = "$subject \r\n\r\n" .
-				esc_html__( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) .
-				"$disable_text $setting_url";
+		$message = "$subject\r\n\r\n"
+			. __( 'Sent by More Privacy Options plugin.', 'more-privacy-options' ) . "\r\n"
+			. __( 'Disable this type of emails in Network admin: ', 'more-privacy-options' ) . ' '
+			. network_admin_url( 'settings.php' );
 
 		$headers = 'Auto-Submitted: auto-generated';
 		wp_mail(
